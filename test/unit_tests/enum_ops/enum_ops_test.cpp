@@ -14,6 +14,24 @@
 #include <adobe/enum_ops.hpp>
 
 
+namespace test {
+    class a {
+    public:
+        enum Number {
+            num_neg_one = -1,
+            num_0 = 0,
+            num_1 = 1,
+            num_2 = 2,
+            num_3 = 3,
+            num_4 = 4,
+            num_5 = 5,
+            num_6 = 6,
+            num_7 = 7
+        };
+    };
+    ADOBE_DEFINE_BITSET_OPS(a::Number);
+};
+
 enum Number {
     num_neg_one = -1,
     num_0 = 0,
@@ -47,6 +65,14 @@ enum class Num : int {
 auto stlab_enable_bitmask_enum(Views) -> std::true_type;
 
 ADOBE_DEFINE_BITSET_OPS(Number)
+
+
+
+BOOST_AUTO_TEST_CASE(enum_bitset_namespace_ops) {
+    test::a::Number x;
+    x =  test::a::num_1 |  test::a::num_2;
+    BOOST_CHECK(x == 3);
+}
 
 BOOST_AUTO_TEST_CASE(enum_bitset_ops) {
     Number x;

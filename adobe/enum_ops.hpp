@@ -54,6 +54,18 @@
 
 /*************************************************************************************************/
 
+#if defined(_WIN32) && !defined(_WIN64)
+//this works around a bug in the 32bit mvc++ where aligned structs will error on the below
+//it would falsey assume that (...) was going to copy.
+    template <typename T>
+    constexpr auto stlab_enable_bitmask_enum(T) -> std::false_type;
+	template <typename T>
+    constexpr auto stlab_enable_arithmetic_enum(T) -> std::false_type;
+#else
+	constexpr auto stlab_enable_bitmask_enum(...) -> std::false_type;
+	constexpr auto stlab_enable_arithmetic_enum(...) -> std::false_type;
+#endif
+
 namespace adobe {
 
 /*************************************************************************************************/
@@ -77,8 +89,7 @@ constexpr bool has_enabled_arithmetic = decltype(stlab_enable_arithmetic_enum(st
 
 /*************************************************************************************************/
 
-constexpr auto stlab_enable_bitmask_enum(...) -> std::false_type;
-constexpr auto stlab_enable_arithmetic_enum(...) -> std::false_type;
+
 
 //this exist to mantain backwards compatability with the old ops
 #define ADOBE_DEFINE_BITSET_OPS(EnumType)                                                     \
